@@ -50,6 +50,10 @@ def tune_model(
     optimization_options.enable_packed_qkv = False
     optimization_options.enable_packed_kv = False
 
+    if model_type == "clip":
+        optimization_options.disable_attention = True
+        optimization_options.enable_layer_norm = False
+
     optimizer = optimize_model(
         input = model_path,
         model_type = model_type,
@@ -77,7 +81,13 @@ def tune_model(
         convert_attribute=False,
     )        
 
-unet_model_path = str(Path("vega_fp16/unet/model.onnx").absolute().as_posix())
-vae_model_path = str(Path("vega_fp16/vae_decoder/model.onnx").absolute().as_posix())
-tune_model(unet_model_path, "unet", True)
-tune_model(vae_model_path, "vae", True)
+text_encoder_model_path = str(Path("vegart_fp16_clip/text_encoder/model.onnx").absolute().as_posix())
+text_encoder_2_model_path = str(Path("vegart_fp16_clip/text_encoder_2/model.onnx").absolute().as_posix())
+tune_model(text_encoder_model_path, "clip", True)
+tune_model(text_encoder_2_model_path, "clip", True)
+#unet_model_path = str(Path("vega_rt_tuned/unet/model.onnx").absolute().as_posix())
+#vae_model_path = str(Path("sdxl_fp16vae_tuned/vae_decoder/model.onnx").absolute().as_posix())
+#vaed_model_path = str(Path("sdxl_fp16vae_tuned/vae_encoder/model.onnx").absolute().as_posix())
+#tune_model(unet_model_path, "unet", True)
+#tune_model(vae_model_path, "vae", True)
+#tune_model(vaed_model_path, "vae", True)
